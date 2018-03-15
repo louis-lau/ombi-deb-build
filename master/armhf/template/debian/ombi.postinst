@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+        adduser --system --disabled-password --disabled-login --home /var/empty \
+                --no-create-home --quiet --force-badname --group ombi
+        ;;
+esac
+
+chown -R ombi: /opt/Ombi
+
+#DEBHELPER#
+
+exit 0

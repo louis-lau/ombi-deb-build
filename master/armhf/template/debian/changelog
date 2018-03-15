@@ -1,0 +1,5 @@
+ombi (@{VERSION}) stable; urgency=medium
+
+  * Upgrade to @{VERSION}, see https://github.com/tidusjar/Ombi/releases for full changelog.
+
+ -- @{MAINTAINER}  @{DATE}

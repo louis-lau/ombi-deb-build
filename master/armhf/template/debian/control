@@ -1,0 +1,13 @@
+Source: ombi
+Section: main
+Priority: optional
+Maintainer: Louis Laureys <louis@laureys.me>
+
+Package: ombi
+Architecture: armhf
+Depends: libunwind8, libcurl4-openssl-dev, adduser, dh-systemd
+Description: Want a Movie or TV Show on Plex or Emby? Use Ombi!
+ Ombi is a self-hosted web application that automatically gives your
+ shared Plex or Emby users the ability to request content by themselves!
+ Ombi can be linked to multiple TV Show and Movie DVR tools to create
+ a seamless end-to-end experience for your users.
