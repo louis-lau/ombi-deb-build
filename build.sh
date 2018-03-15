@@ -9,9 +9,9 @@ scriptPath="$( cd "$(dirname "$0")" ; pwd -P )"
 cd $scriptPath
 
 for branch in "${branches[@]}"; do :
-# Get latest 10 builds. Filter out failed, cancelled, PR. Then return most recent version
-latestVersion=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/history?recordsNumber=10&branch=${branch}" | jq -r '[.builds[] | select(.status == "success" and .pullRequestId == null)] | .[0].version');
-jobId=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/build/${latestVersion}" | jq -r '.build.jobs[].jobId');
+  # Get latest 10 builds. Filter out failed, cancelled, PR. Then return most recent version
+  latestVersion=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/history?recordsNumber=10&branch=${branch}" | jq -r '[.builds[] | select(.status == "success" and .pullRequestId == null)] | .[0].version');
+  jobId=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/build/${latestVersion}" | jq -r '.build.jobs[].jobId');
   for arch in "${architectures[@]}"; do :
     if [[ ! -d "${branch}/${arch}/builds" ]]; then
       mkdir "${branch}/${arch}/builds"
