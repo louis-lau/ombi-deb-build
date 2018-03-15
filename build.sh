@@ -16,6 +16,9 @@ jobId=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/request
     if [[ ! -d "${branch}/${arch}/builds" ]]; then
       mkdir "${branch}/${arch}/builds"
     fi
+    if [[ ! -d "${branch}/${arch}/template/ombi" ]]; then
+      mkdir "${branch}/${arch}/template/ombi"
+    fi
     if [[ ! -f "${branch}/${arch}/builds/ombi_${latestVersion}_${arch}.deb" ]]; then
       versionDir="${branch}/${arch}/builds/ombi-${latestVersion}";
       if [[ ! -d $versionDir ]]; then
