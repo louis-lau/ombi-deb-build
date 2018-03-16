@@ -49,6 +49,7 @@ for branch in "${branches[@]}"; do :
         # if .deb was generated delete the dir
         if [[ -f "${branch}/${arch}/builds/ombi_${latestVersion}_$arch.deb" ]]; then
           rm -rf $versionDir;
+          newRelease=true;
         fi;
 
       else
@@ -60,4 +61,7 @@ for branch in "${branches[@]}"; do :
       echo "We already have $branch v${latestVersion}_${arch}. Not building.";
     fi;
   done;
+  if [[ $newRelease = true ]] && [[ -f "custom.sh" ]] ; then
+    ./custom.sh ${branch} ${latestVersion};
+  fi
 done;
