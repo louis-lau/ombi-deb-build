@@ -1,9 +1,14 @@
 #!/bin/bash
 
 # Run only one instance of script at a time
-me="$(basename "$0")";
-running=$(ps h -C "$me" | grep -wv "^$$" | wc -l);
-[[ $running > 1 ]] && exit;
+LOCKFILE=/tmp/ombi-deb-build.txt
+if [ -e ${LOCKFILE} ] && kill -0 `cat ${LOCKFILE}`; then
+    echo "already running"
+    exit
+fi
+# make sure the lockfile is removed when we exit and then claim it
+trap "rm -f ${LOCKFILE}; exit" INT TERM EXIT
+echo $$ > ${LOCKFILE}
 
 branches=(master develop);
 architectures=(amd64 armhf);
@@ -58,7 +63,7 @@ for branch in "${branches[@]}"; do :
           downloadUrl="https://ci.appveyor.com/api/buildjobs/${jobId}/artifacts/${filename}"
         fi
         archive="${versionDir}/ombi/${filename}";
-        curl -L -v $downloadUrl --output $archive;
+        curl -L $downloadUrl --output $archive;
         tar -xf $archive -C "${versionDir}/ombi/";
         rm $archive;
 
@@ -93,3 +98,5 @@ for branch in "${branches[@]}"; do :
     newRelease=false
   fi
 done;
+
+rm -f ${LOCKFILE}
