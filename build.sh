@@ -9,9 +9,17 @@ scriptPath="$( cd "$(dirname "$0")" ; pwd -P )";
 cd $scriptPath;
 
 for branch in "${branches[@]}"; do :
-  # Get latest 10 builds. Filter out failed, PR and tagged builds. Then return most recent version
-  latestVersion=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/history?recordsNumber=10&branch=${branch}" | jq -r '[.builds[] | select(.status == "success" and .pullRequestId == null and .isTag == false)] | .[0].version');
-  jobId=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/build/${latestVersion}" | jq -r '.build.jobs[].jobId');
+  # If master branch use github releases, else appveyor
+  if [[ $branch == "master" ]]; then
+    githubJson=$(curl -s -G -X GET "https://api.github.com/repos/Tidusjar/Ombi/releases")
+    # Latest github release tag. e.g v3.0.3030
+    githubTag=$(echo $githubJson | jq -r '.[0].tag_name')
+    # Remove leading v
+    latestVersion=${githubTag:1}
+  else
+    # Get latest 10 builds. Filter out failed, PR and tagged builds. Then return most recent version
+    latestVersion=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/history?recordsNumber=10&branch=${branch}" | jq -r '[.builds[] | select(.status == "success" and .pullRequestId == null and .isTag == false)] | .[0].version');
+  fi
   for arch in "${architectures[@]}"; do :
     # Make directories if they don't exist already
     if [[ ! -d "${branch}/${arch}/builds" ]]; then
@@ -37,8 +45,15 @@ for branch in "${branches[@]}"; do :
           armhf )
             filename="linux-arm.tar.gz" ;;
         esac;
+        # If master branch use github releases, else appveyor
+        if [[ $branch == "master" ]]; then
+          downloadUrl=$(echo $githubJson | jq -r ".[0].assets[] | select( .name == \"${filename}\" ) | .browser_download_url")
+        else
+          jobId=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/build/${latestVersion}" | jq -r '.build.jobs[].jobId');
+          downloadUrl="https://ci.appveyor.com/api/buildjobs/${jobId}/artifacts/${filename}"
+        fi
         archive="${versionDir}/ombi/${filename}";
-        curl -L "https://ci.appveyor.com/api/buildjobs/${jobId}/artifacts/${filename}" --output $archive;
+        curl -L -v $downloadUrl --output $archive;
         tar -xf $archive -C "${versionDir}/ombi/";
         rm $archive;
 
