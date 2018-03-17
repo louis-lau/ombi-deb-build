@@ -9,8 +9,8 @@ scriptPath="$( cd "$(dirname "$0")" ; pwd -P )";
 cd $scriptPath;
 
 for branch in "${branches[@]}"; do :
-  # Get latest 10 builds. Filter out failed, cancelled and PR builds. Then return most recent version
-  latestVersion=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/history?recordsNumber=10&branch=${branch}" | jq -r '[.builds[] | select(.status == "success" and .pullRequestId == null)] | .[0].version');
+  # Get latest 10 builds. Filter out failed, PR and tagged builds. Then return most recent version
+  latestVersion=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/history?recordsNumber=10&branch=${branch}" | jq -r '[.builds[] | select(.status == "success" and .pullRequestId == null and .isTag == false)] | .[0].version');
   jobId=$(curl -s -G -X GET "https://ci.appveyor.com/api/projects/tidusjar/requestplex/build/${latestVersion}" | jq -r '.build.jobs[].jobId');
   for arch in "${architectures[@]}"; do :
     # Make directories if they don't exist already
@@ -68,5 +68,8 @@ for branch in "${branches[@]}"; do :
   # Execute custom script if a new deb was built and custom.sh exists. Use this to deploy to repo.
   if [[ $newRelease = true ]] && [[ -f "custom.sh" ]] ; then
     ./custom.sh ${branch} ${latestVersion};
+
+    # Set $newRelease false for next branch
+    newRelease=false
   fi
 done;
