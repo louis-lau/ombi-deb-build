@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Run only one instance of script at a time
+me="$(basename "$0")";
+running=$(ps h -C "$me" | grep -wv "^$$" | wc -l);
+[[ $running > 1 ]] && exit;
+
 branches=(master develop);
 architectures=(amd64 armhf);
 maintainer="Louis Laureys <louis@laureys.me>";
