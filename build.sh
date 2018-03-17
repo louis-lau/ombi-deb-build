@@ -33,9 +33,9 @@ for branch in "${branches[@]}"; do :
         # Download and extract linux.tar.gz to build folder
         case $arch in
           amd64 )
-          filename="linux.tar.gz";;
+            filename="linux.tar.gz" ;;
           armhf )
-          filename="linux-arm.tar.gz";;
+            filename="linux-arm.tar.gz" ;;
         esac;
         archive="${versionDir}/ombi/${filename}";
         curl -L "https://ci.appveyor.com/api/buildjobs/${jobId}/artifacts/${filename}" --output $archive;
