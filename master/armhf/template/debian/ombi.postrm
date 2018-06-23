@@ -5,11 +5,20 @@ case "$1" in
     if [ -f /opt/Ombi/Ombi.db ]; then
       rm -f /opt/Ombi/Ombi.db
     fi
+    if [ -f /opt/Ombi/Ombi.db.backup ]; then
+      rm -f /opt/Ombi/Ombi.db.backup
+    fi
     if [ -f /opt/Ombi/Schedules.db ]; then
       rm -f /opt/Ombi/Schedules.db
     fi
     if [ -d /opt/Ombi/Logs ]; then
       rm -rf /opt/Ombi/Logs
+    fi
+    if [ -f /etc/Ombi/Ombi.db ]; then
+      rm -f /etc/Ombi/Ombi.db
+    fi
+    if [ -d /etc/Ombi/ ]; then
+      rm -rf /etc/Ombi/
     fi
   ;;
 
