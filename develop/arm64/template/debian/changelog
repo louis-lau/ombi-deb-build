@@ -1,0 +1,5 @@
+ombi (@{VERSION}) unstable; urgency=medium
+
+  * Upgrade to @{VERSION}, see https://ci.appveyor.com/project/tidusjar/requestplex/history?branch=develop for full history.
+
+ -- @{MAINTAINER}  @{DATE}

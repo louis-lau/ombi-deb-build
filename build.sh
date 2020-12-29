@@ -11,7 +11,7 @@ trap "rm -f ${LOCKFILE}; exit" INT TERM EXIT
 echo $$ > ${LOCKFILE}
 
 branches=(master develop);
-architectures=(amd64 armhf);
+architectures=(amd64 armhf arm64);
 maintainer="Louis Laureys <louis@laureys.me>";
 
 # Change to script directory
@@ -57,6 +57,8 @@ for branch in "${branches[@]}"; do :
             filename="linux.tar.gz" ;;
           armhf )
             filename="linux-arm.tar.gz" ;;
+          arm64 )
+            filename="linux-arm64.tar.gz" ;;
         esac;
         # If master branch: use github releases, else: appveyor
         if [[ $branch == "master" ]]; then
